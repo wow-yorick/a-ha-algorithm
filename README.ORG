@@ -1,0 +1,7 @@
+#+TITLE:啊哈-算法
+#+AUTHOR:yorick
+#+DATE:<2018-09-28 Fri>
+* 排序算法
++ 排序入门 ~list~
+  1. 简单桶排序 :: code1.go
+  2. 冒泡排序
