@@ -4,24 +4,23 @@ import (
 	"fmt"
 )
 
-type StringSlice []string
+//归并排序
+var aux StringArr
 
-func (s StringSlice) Len() int           { return len(s) }
-func (s StringSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
-func (s StringSlice) Less(i, j int) bool { return s[i] < s[j] }
+type StringArr []string
 
-func merge(a StringSlice, lo, mid, hi int) {
+func (s StringArr) Len() int           { return len(s) }
+func (s StringArr) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s StringArr) Less(i, j int) bool { return s[i] < s[j] }
+
+func merge(a StringArr, lo, mid, hi int) {
 	var (
-		aux = make(StringSlice,hi)
-		i   = lo
-		j   = mid + 1
+		i = lo
+		j = mid + 1
 	)
-	fmt.Println(a, lo, mid,hi)
-	return
 	for k := lo; k <= hi; k++ {
 		aux[k] = a[k]
 	}
-
 
 	for k := lo; k <= hi; k++ {
 		if i > mid {
@@ -41,18 +40,34 @@ func merge(a StringSlice, lo, mid, hi int) {
 
 }
 
-func sort(a StringSlice, lo, hi int) {
+//自顶向下排序
+func sortDown(a StringArr, lo, hi int) {
 	if hi <= lo {
 		return
 	}
-	mid := lo + (hi - lo)/2
-	sort(a, lo, mid)
-	sort(a, mid+1, mid)
+	mid := lo + (hi-lo)/2
+	sortDown(a, lo, mid)
+	sortDown(a, mid+1, hi)
 	merge(a, lo, mid, hi)
 }
 
+func sortUp(a StringArr) {
+	N := a.Len()
+	for sz := 1; sz < N; sz = sz + sz { //sz 子数组大小
+		for lo := 0; lo < N-sz; lo += sz + sz {
+			minN := N - 1
+			if lo+sz+sz-1 < N-1 {
+				minN = lo + sz + sz - 1
+			}
+			merge(a, lo, lo+sz-1, minN)
+		}
+	}
+}
+
 func main() {
-	a := StringSlice{"M","E","R","G","E","S","O","R","T","E","X","A","M","P","L","E"}
-	fmt.Printf("%d",a.Len())
-	sort(a, 0, a.Len()-1)
+	a := StringArr{"M", "E", "R", "G", "E", "S", "O", "R", "T", "E", "X", "A", "M", "P", "L", "E"}
+	aux = make(StringArr, a.Len())
+	//sortDown(a, 0, a.Len()-1)
+	sortUp(a)
+	fmt.Printf("%v", a)
 }
